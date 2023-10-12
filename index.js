@@ -1,154 +1,154 @@
-import { displayBoard, displayMessage, displayTextMessage, displayTextMessageTwo }
-  from './event-handlers.js';
+// import { displayBoard, displayMessage, displayTextMessage, displayTextMessageTwo }
+//   from './event-handlers.js';
 
-displayMessage("Select a game mode to start a new match!", "white")
-displayTextMessage("")
-displayTextMessageTwo("")
-let placedShips = [];
-let aIShips = [];
-let ourShots = [];
-let aIShots = [];
-export let hasGameStarted = false;
-export let ourBoard = {};
-export let aIBoard = {};
+// displayMessage("Select a game mode to start a new match!", "white")
+// displayTextMessage("")
+// displayTextMessageTwo("")
+// let placedShips = [];
+// let aIShips = [];
+// let ourShots = [];
+// let aIShots = [];
+// export let hasGameStarted = false;
+// export let ourBoard = {};
+// export let aIBoard = {};
 
 //OPT
-let aIHits = [];
-function smartAI(coordinates) { // ne lőjön az AI olyan helyre, ami találattal szomszédos
-  let isValid = true;
-  aIHits.forEach(hitCoordinates => {
-    if (hitCoordinates.x === coordinates.x && Math.abs(hitCoordinates.y - coordinates.y) === 1) {
-      isValid = false;
-    }
-    else if (hitCoordinates.y === coordinates.y && Math.abs(hitCoordinates.x - coordinates.x) === 1) {
-      isValid = false;
-    }
-  })
-  return isValid;
-}
+// let aIHits = [];
+// function smartAI(coordinates) { // ne lőjön az AI olyan helyre, ami találattal szomszédos
+//   let isValid = true;
+//   aIHits.forEach(hitCoordinates => {
+//     if (hitCoordinates.x === coordinates.x && Math.abs(hitCoordinates.y - coordinates.y) === 1) {
+//       isValid = false;
+//     }
+//     else if (hitCoordinates.y === coordinates.y && Math.abs(hitCoordinates.x - coordinates.x) === 1) {
+//       isValid = false;
+//     }
+//   })
+//   return isValid;
+// }
 
-// END OF OPT
-function boardCoordinate(coordinateX, coordinateY) { // x-y: a1 c3 -----> board[0][0] koordináták megfelelő alakba konvertálása
-  const indexPair = {
-    x: coordinateX.toLowerCase().charCodeAt(0) - 97,
-    y: coordinateY - 1
-  }
-  return indexPair;
-}
+// // END OF OPT
+// function boardCoordinate(coordinateX, coordinateY) { // x-y: a1 c3 -----> board[0][0] koordináták megfelelő alakba konvertálása
+//   const indexPair = {
+//     x: coordinateX.toLowerCase().charCodeAt(0) - 97,
+//     y: coordinateY - 1
+//   }
+//   return indexPair;
+//}
 
-function createBoard(size) { // legenerál egy 'size' nagyságú pályát
-  const board = [];
-  for (let i = 0; i < size; i++) {
-    board.push([]);
-    for (let j = 0; j < size; j++) {
-      board[i].push('');
-    }
-  }
-  return board;
-}
+// function createBoard(size) { // legenerál egy 'size' nagyságú pályát
+//   const board = [];
+//   for (let i = 0; i < size; i++) {
+//     board.push([]);
+//     for (let j = 0; j < size; j++) {
+//       board[i].push('');
+//     }
+//   }
+//   return board;
+// }
 
-const placeShip = { // hajók lerakása AI és játékos szempontjából
-  ai: function (coordinates, isValid) {
-    if (isValid) aIBoard.board[coordinates.x][coordinates.y] = "  "
-    else displayMessage("You can't place a ship there!", "white")
-    displayBoard(aIBoard);
-  },
-  player: function (coordinates, isValid) {
-    if (isValid) ourBoard.board[coordinates.x][coordinates.y] = "🚢"
-    else displayMessage("You can't place a ship there!", "white")
-    displayBoard(ourBoard);
-  }
-}
+// const placeShip = { // hajók lerakása AI és játékos szempontjából
+//   ai: function (coordinates, isValid) {
+//     if (isValid) aIBoard.board[coordinates.x][coordinates.y] = "  "
+//     else displayMessage("You can't place a ship there!", "white")
+//     displayBoard(aIBoard);
+//   },
+//   player: function (coordinates, isValid) {
+//     if (isValid) ourBoard.board[coordinates.x][coordinates.y] = "🚢"
+//     else displayMessage("You can't place a ship there!", "white")
+//     displayBoard(ourBoard);
+//   }
+// }
 
-const shoot = {// lövések regisztrálása AI és játékos szempontjából
-  ai: function (coordinates, isValid) {
-    if (isValid) {
-      if (ourBoard.board[coordinates.x][coordinates.y] === "🚢") {
-        ourBoard.board[coordinates.x][coordinates.y] = "💥"
-        displayTextMessageTwo("It's a hit!", "red")
-        aIHits.push({ x: coordinates.x, y: coordinates.y });
-        console.log(aIHits)
-        setTimeout(function () {
-          ourBoard.board[coordinates.x][coordinates.y] = "💀"
-          displayBoard(ourBoard)
-        }, 500);
-      }
-      else {
-        ourBoard.board[coordinates.x][coordinates.y] = "💥";
-        displayTextMessageTwo("It's a miss!", "green");
-      }
-    }
-    displayBoard(ourBoard)
-  },
-  player: function (coordinates, isValid) {
-    if (isValid) {
-      if (aIBoard.board[coordinates.x][coordinates.y] === "  ") {
-        aIBoard.board[coordinates.x][coordinates.y] = "💥"
-        displayTextMessageTwo("It's a hit!", "green")
-        setTimeout(function () {
-          aIBoard.board[coordinates.x][coordinates.y] = "💀"
-          displayBoard(aIBoard)
-        }, 500)
-      }
-      else {
-        aIBoard.board[coordinates.x][coordinates.y] = "💥";
-        displayTextMessageTwo("It's a miss!", "red")
-      }
-    }
+// const shoot = {// lövések regisztrálása AI és játékos szempontjából
+//   ai: function (coordinates, isValid) {
+//     if (isValid) {
+//       if (ourBoard.board[coordinates.x][coordinates.y] === "🚢") {
+//         ourBoard.board[coordinates.x][coordinates.y] = "💥"
+//         displayTextMessageTwo("It's a hit!", "red")
+//         aIHits.push({ x: coordinates.x, y: coordinates.y });
+//         console.log(aIHits)
+//         setTimeout(function () {
+//           ourBoard.board[coordinates.x][coordinates.y] = "💀"
+//           displayBoard(ourBoard)
+//         }, 500);
+//       }
+//       else {
+//         ourBoard.board[coordinates.x][coordinates.y] = "💥";
+//         displayTextMessageTwo("It's a miss!", "green");
+//       }
+//     }
+//     displayBoard(ourBoard)
+//   },
+//   player: function (coordinates, isValid) {
+//     if (isValid) {
+//       if (aIBoard.board[coordinates.x][coordinates.y] === "  ") {
+//         aIBoard.board[coordinates.x][coordinates.y] = "💥"
+//         displayTextMessageTwo("It's a hit!", "green")
+//         setTimeout(function () {
+//           aIBoard.board[coordinates.x][coordinates.y] = "💀"
+//           displayBoard(aIBoard)
+//         }, 500)
+//       }
+//       else {
+//         aIBoard.board[coordinates.x][coordinates.y] = "💥";
+//         displayTextMessageTwo("It's a miss!", "red")
+//       }
+//     }
 
-    else displayMessage("You can't shoot there!", "white")
-    displayBoard(aIBoard);
-  }
-}
+//     else displayMessage("You can't shoot there!", "white")
+//     displayBoard(aIBoard);
+//   }
+// }
 
-function validShot(shots, coordinates) { // leellenőrzi egy lövés hitelességét, hogy ne lőhessünk kétszer ugyanoda
-  let isValid = true;
-  shots.forEach(shot => {
-    if (shot[0] === coordinates[0] && shot[1] === coordinates[1]) {
-      isValid = false;
-    }
-  })
-  return isValid;
-}
+// function validShot(shots, coordinates) { // leellenőrzi egy lövés hitelességét, hogy ne lőhessünk kétszer ugyanoda
+//   let isValid = true;
+//   shots.forEach(shot => {
+//     if (shot[0] === coordinates[0] && shot[1] === coordinates[1]) {
+//       isValid = false;
+//     }
+//   })
+//   return isValid;
+// }
 
-function validPlacement(placedShips, coordinates) { // leellenőrzi egy hajó lerakásának hitelességét, megtiltja a hajók egymás melletti lerakását
-  let isValid = true;
-  placedShips.forEach(ship => {
-    if (ship[0] === coordinates[0] && Math.abs(ship[1] - coordinates[1]) <= 1) {
-      isValid = false;
-    }
-    else if (ship[1] === coordinates[1] && Math.abs(ship[0].charCodeAt(0) - coordinates[0].charCodeAt(0)) <= 1) {
-      isValid = false;
-    }
-    else if (ship[0] === coordinates[0] && ship[1] === coordinates[1]) {
-      isValid = false;
-    }
-  })
-  return isValid;
-}
+// function validPlacement(placedShips, coordinates) { // leellenőrzi egy hajó lerakásának hitelességét, megtiltja a hajók egymás melletti lerakását
+//   let isValid = true;
+//   placedShips.forEach(ship => {
+//     if (ship[0] === coordinates[0] && Math.abs(ship[1] - coordinates[1]) <= 1) {
+//       isValid = false;
+//     }
+//     else if (ship[1] === coordinates[1] && Math.abs(ship[0].charCodeAt(0) - coordinates[0].charCodeAt(0)) <= 1) {
+//       isValid = false;
+//     }
+//     else if (ship[0] === coordinates[0] && ship[1] === coordinates[1]) {
+//       isValid = false;
+//     }
+//   })
+//   return isValid;
+// }
 
 
-function randomCoordinate() { // generál egy random koordinátapárt (hasonlóan az aIShoot függvényhez az event-handlersben)
-  const randomX = String.fromCharCode(Math.floor(Math.random() * ourBoard.board.length) + 65);
-  const randomY = Math.floor(Math.random() * ourBoard.board.length) + 1;
+// function randomCoordinate() { // generál egy random koordinátapárt (hasonlóan az aIShoot függvényhez az event-handlersben)
+//   const randomX = String.fromCharCode(Math.floor(Math.random() * ourBoard.board.length) + 65);
+//   const randomY = Math.floor(Math.random() * ourBoard.board.length) + 1;
 
-  return randomX + randomY;
-}
+//   return randomX + randomY;
+// }
 
-function isGameOver() { // leellenőrzi a két játékos mezőit, és ha nem talál hajókat, véget vet a játéknak
-  if (!ourBoard.board.join("").includes("🚢") || !aIBoard.board.join("").includes("  ")) {
-    return true;
-  }
-  else return false;
-}
+// function isGameOver() { // leellenőrzi a két játékos mezőit, és ha nem talál hajókat, véget vet a játéknak
+//   if (!ourBoard.board.join("").includes("🚢") || !aIBoard.board.join("").includes("  ")) {
+//     return true;
+//   }
+//   else return false;
+// }
 
-function whoWon() { // leellenőrzi a két játékos mezőit, és eldönti a hajók hiányából, hogy ki nyert / vesztett
-  if (!ourBoard.board.join("").includes("🚢")) {
-    return "you lost"
-  }
-  else if (!aIBoard.board.join("").includes(" ")) {
-    return "you win"
-  }
+// function whoWon() { // leellenőrzi a két játékos mezőit, és eldönti a hajók hiányából, hogy ki nyert / vesztett
+//   if (!ourBoard.board.join("").includes("🚢")) {
+//     return "you lost"
+//   }
+//   else if (!aIBoard.board.join("").includes(" ")) {
+//     return "you win"
+//   }
 }
 /**
  * This function is called when you choose the game mode.
@@ -165,6 +165,8 @@ export function selectGame(gameDescription) { // a data.js-ből kapott adatok al
   let splitDescription = gameDescription.split(',');
   let unparsedSize = splitDescription.shift();
   let unparsedShips = splitDescription.join(',');
+
+
   //boardSize változó a kulcsból
   boardSize = parseInt(unparsedSize.replace("size:", ""));
   //ships rész tömbbé bontása
